@@ -17,7 +17,44 @@
                 />
             </div>
 
-            <p id="fileName"></p>
+            <div class="setting">
+                <div class="do-sample">
+                    <input type="checkbox" id="do-sample" v-model="doSample">
+                    <label for="do-sample">do sample</label>
+                </div>
+                <div v-show="doSample" class="setting-slider-container">
+                    <div class="slider-item">
+                        <span>temperature</span>
+                        <div>
+                            <KSlider
+                                v-model="temperature"
+                                :min="0"
+                                :max="1"
+                                height="30px"
+                                :step="0.1"
+                                :sliderColor="'rgba(66, 88, 255, 0.3)'"
+                                :sliderBarColor="'rgba(66, 88, 255, 0.7)'"
+                                :formatTooltip="(v) => v"
+                            />
+                        </div>
+                    </div>
+                    <div class="slider-item">
+                        <span>top p</span>
+                        <div>
+                        <KSlider
+                            v-model="topP"
+                            :min="0"
+                            :max="1"
+                            height="30px"
+                            :step="0.1"
+                            :sliderColor="'rgba(66, 88, 255, 0.3)'"
+                            :sliderBarColor="'rgba(66, 88, 255, 0.7)'"
+                            :formatTooltip="(v) => v"
+                        />
+                       </div>
+                    </div>
+                </div>
+            </div>
             
             <div class="notification is-link" v-show="notification.show">
                 <button class="delete" @click="notification.show = false"></button>
@@ -49,6 +86,7 @@
             </div>
             <div class="card-content">
                 <div class="content">
+                    <span :class="isloading ? 'loader': 'finish-loader '"></span>
                     <div id="text-content">{{ textResult }}</div>
                 </div>
             </div>
@@ -63,6 +101,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue';
 import * as nifti from '@/hook/nifti';
+import KSlider from './components/KSlider.vue';
 
 const textResult = ref('');
 const userInputText = ref('');
@@ -71,7 +110,13 @@ const notification = reactive({
     content: ''
 });
 let userFile: File | undefined = undefined;
+
+const isloading = ref(false);
 const uploaded = ref(false);
+
+const doSample = ref(true);
+const temperature = ref(0.2);
+const topP = ref(0.7);
 
 onMounted(async () => {
     textResult.value = 'Untitled CT Detection';
@@ -123,10 +168,14 @@ async function uploadNiigz() {
     }
 
     notification.show = false;
+    isloading.value = true;
 
     const form = new FormData();
     form.append('file', userFile);
     form.append('text', userText);
+    form.append('do_sample', doSample.value + '');
+    form.append('temperature', temperature.value + '');
+    form.append('top_p', topP.value + '');
 
     textResult.value = 'Please waiting ...';
     const response = await fetch('http://bacteria.tech:6004/upload', {
@@ -136,14 +185,15 @@ async function uploadNiigz() {
             'Content-Type': 'multipart/form-data'
         }
     });
-    const resJson = await response.json();
-    if (resJson) {
+    try {
+        const resJson = await response.json();
         const data = resJson.data;
         const message = data.message;
         textResult.value = message;
-    } else {
-        console.log('fail fetch');
+    } catch (error) {
+        console.log('fail to fetch, reason:', error);
     }
+    isloading.value = false;
 }
 
 async function deleteNiigz() {
@@ -158,6 +208,8 @@ async function deleteNiigz() {
 <style>
 :root {
     --miracle-display-width: 670px;
+    --main-color: var(--bulma-link);
+    --font-main-color: var(--bulma-body-color);
 }
 
 .app-container {
@@ -217,5 +269,72 @@ async function deleteNiigz() {
     width: var(--miracle-display-width);
 }
 
+.content {
+    display: flex;
+    align-items: center;
+}
 
+.loader {
+  border: 5px solid var(--bulma-body-color);
+  border-top: 5px solid var(--bulma-link);
+  border-radius: 50%; /* 圆形 */
+  width: 30px;
+  height: 30px;
+  animation: spin 2s linear infinite; /* 应用旋转动画 */
+  margin-right: 20px;
+}
+
+.finish-loader {
+    border: 5px solid var(--bulma-link);
+    border-radius: 50%; /* 圆形 */
+    width: 30px;
+    height: 30px;
+    margin-right: 20px;
+}
+
+.slider-item {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    height: 45px;
+}
+
+.slider-item > span {
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 100px;
+}
+
+
+.setting {
+    padding: 10px;
+    user-select: none;
+    display: flex;
+}
+
+
+
+.do-sample {
+    width: 130px;
+}
+
+.setting-slider-container {
+    width: 550px;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    border: 1px solid var(--main-color);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: .7em;
+}
+
+.slider-item > div {
+    width: 400px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 </style>

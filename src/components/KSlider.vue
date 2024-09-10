@@ -55,8 +55,8 @@ export default {
             default: 1
         },
         height: {
-            type: Number,
-            default: 20
+            type: String,
+            default: '20px'
         },
         sliderColor: {
             type: String,
@@ -77,16 +77,17 @@ export default {
     },
     emits: ['update:modelValue'],
     setup(props, ctx) {
+        
         const slider = reactive({
             pressed: false,
             element: null,
             width: 0,
             cursor: 'grab',
             transition: 'unset',
-            showFormatText: false,
+            showFormatText: true,
             formatText: '',
             hideFormatText: debounce(() => {
-                slider.showFormatText = false;
+                // slider.showFormatText = false;
             }, 2000),
             grids: []
         });
@@ -227,6 +228,12 @@ export default {
                 slider.transition = '.35s ease';
                 update(event);
             }
+
+            const formatValue = props.formatTooltip(props.modelValue);
+            if (formatValue !== undefined) {
+                slider.formatText = formatValue;
+                slider.showFormatText = true;
+            }
         });
 
         onUnmounted(() => {
@@ -266,6 +273,7 @@ export default {
     color: white;
     height: 100%;
     position: absolute;
+    top: -5%;
     left: 7px;
     display: flex;
     align-items: center;
@@ -278,6 +286,7 @@ export default {
     color: white;
     height: 100%;
     position: absolute;
+    top: -5%;
     right: 7px;
     display: flex;
     align-items: center;
