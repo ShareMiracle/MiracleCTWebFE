@@ -181,9 +181,6 @@ async function uploadNiigz() {
     const response = await fetch('http://bacteria.tech:6004/upload', {
         method: 'POST',
         body: form,
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
     });
     try {
         const resJson = await response.json();
@@ -213,7 +210,6 @@ async function deleteNiigz() {
 }
 
 .app-container {
-    margin-top: 100px;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -222,7 +218,7 @@ async function deleteNiigz() {
 }
 
 .main {
-    margin: 20px;
+    margin: 10px;
     width: var(--miracle-display-width);
 }
 
@@ -303,6 +299,7 @@ async function deleteNiigz() {
     margin-left: 10px;
     margin-right: 10px;
     width: 100px;
+    font-size: 1.0rem;
 }
 
 
