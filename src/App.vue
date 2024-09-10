@@ -126,19 +126,19 @@ async function uploadNiigz() {
 
     notification.show = false;
 
-    // const form = new FormData();
-    // form.append('file', userFile);
-    // form.append('text', userText);
-    // textResult.value = 'Please waiting ...';
-    // const response = await fetch('http://bacteria.tech:6004/upload', { method: 'POST', body: form });
-    // const resJson = await response.json();
-    // if (resJson) {
-    //     const data = resJson.data;
-    //     const message = data.message;
-    //     textResult.value = message;
-    // } else {
-    //     console.log('fail fetch');
-    // }
+    const form = new FormData();
+    form.append('file', userFile);
+    form.append('text', userText);
+    textResult.value = 'Please waiting ...';
+    const response = await fetch('http://bacteria.tech:6004/upload', { method: 'POST', body: form });
+    const resJson = await response.json();
+    if (resJson) {
+        const data = resJson.data;
+        const message = data.message;
+        textResult.value = message;
+    } else {
+        console.log('fail fetch');
+    }
 }
 
 async function deleteNiigz() {
