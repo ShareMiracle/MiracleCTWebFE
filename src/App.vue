@@ -64,8 +64,6 @@
 import { onMounted, reactive, ref } from 'vue';
 import * as nifti from '@/hook/nifti';
 
-import KSlider from '@/components/KSlider.vue';
-
 const textResult = ref('');
 const userInputText = ref('');
 const notification = reactive({
@@ -129,8 +127,15 @@ async function uploadNiigz() {
     const form = new FormData();
     form.append('file', userFile);
     form.append('text', userText);
+
     textResult.value = 'Please waiting ...';
-    const response = await fetch('http://bacteria.tech:6004/upload', { method: 'POST', body: form });
+    const response = await fetch('http://bacteria.tech:6004/upload', {
+        method: 'POST',
+        body: form,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
     const resJson = await response.json();
     if (resJson) {
         const data = resJson.data;
