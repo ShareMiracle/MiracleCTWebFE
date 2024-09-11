@@ -185,8 +185,9 @@ async function uploadNiigz() {
     try {
         const resJson = await response.json();
         const data = resJson.data;
-        textResult.value = data;
+        textResult.value = (data || { message: 'server error' }).message;
     } catch (error) {
+        textResult.value = 'server error: ' + error;
         console.log('fail to fetch, reason:', error);
     }
     isloading.value = false;
