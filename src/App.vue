@@ -119,7 +119,7 @@ const temperature = ref(0.2);
 const topP = ref(0.7);
 
 onMounted(async () => {
-    textResult.value = 'Untitled CT Detection';
+    textResult.value = 'without contrast.Torax and abdomen.No mediastinic or axillary adenopathies of significant size.No pleural or pericardic spill.No pulmonary nods or parenchymal consolidations.No alterations in intestinal handles or colic frame.Normal morphology and homogeneous density liver.No hepatic focal lesions.Vesicula and biliary via without alterations.pancreas without alterations.Spleen and adrenal glands without alterations.Rinones of Tamano Morphology and normal density without lithiasis or ectasia of the excretory via.No retroperitoneal or pelvic mesenteric adenopathies of significant size.No intra -abdominal free liquid.No alterations in intestinal handles or colic frame.No pelvic or inguinal retroperitoneal adenopathies of significant size.No wose injuries.CONCLUSION WITHOUT SIGNS OF PATHOLOGY.';
 
     nifti.params._readniiCallback = header => {
         const dims = header.dims;
@@ -333,5 +333,9 @@ async function deleteNiigz() {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+#text-content {
+    width: 90%;
 }
 </style>
